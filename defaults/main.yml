@@ -9,5 +9,5 @@ sentry_env: {}
 sentry_mail: {}
 sentry_config: {}
 
-sentry_url:
+sentry_url: 
 sentry_superusers: []
