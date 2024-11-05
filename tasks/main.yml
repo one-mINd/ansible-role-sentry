@@ -29,7 +29,7 @@
 - name: Run install.sh
   command:
     chdir: "{{ sentry_docker_compose_project_folder }}"
-    cmd: ./install.sh --skip-commit-check --skip-user-creation --skip-sse42-requirements --no-report-self-hosted-issues
+    cmd: ./install.sh --no-user-prompt
 
 - name: Configure sentry email settings
   loop: "{{ sentry_mail | dict2items }}"
@@ -53,7 +53,7 @@
     line: "{{ item.key }}: {{ item.value | to_json }}"
 
 - name: Start sentry self hosted docker-compose project
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "{{ sentry_docker_compose_project_folder }}"
     remove_orphans: true
     state: present
