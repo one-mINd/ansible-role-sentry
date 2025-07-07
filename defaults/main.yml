@@ -2,7 +2,7 @@
 # defaults file for sentry_selfhosted
 
 sentry_docker_compose_project_folder: /opt/docker/sentry
-sentry_version: 21.1.0
+sentry_version: 24.11.1
 sentry_bind: 9000
 
 sentry_env: {}

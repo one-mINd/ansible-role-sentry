@@ -29,7 +29,7 @@
 - name: Run install.sh
   command:
     chdir: "{{ sentry_docker_compose_project_folder }}"
-    cmd: ./install.sh --no-user-prompt
+    cmd: ./install.sh --no-report-self-hosted-issues --skip-user-creation
 
 - name: Configure sentry email settings
   loop: "{{ sentry_mail | dict2items }}"
