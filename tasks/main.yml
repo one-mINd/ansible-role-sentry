@@ -57,6 +57,8 @@
     project_src: "{{ sentry_docker_compose_project_folder }}"
     remove_orphans: true
     state: present
+  async: 600
+  poll: 30
 
 - name: Add sentry super users
   command:
