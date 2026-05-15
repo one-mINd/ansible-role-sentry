@@ -30,6 +30,8 @@
   command:
     chdir: "{{ sentry_docker_compose_project_folder }}"
     cmd: ./install.sh --no-report-self-hosted-issues --skip-user-creation
+  async: 600
+  poll: 30
 
 - name: Configure sentry email settings
   loop: "{{ sentry_mail | dict2items }}"
