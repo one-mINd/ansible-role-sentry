@@ -2,12 +2,22 @@
 # defaults file for sentry_selfhosted
 
 sentry_docker_compose_project_folder: /opt/docker/sentry
-sentry_version: 24.11.1
+sentry_version: 24.4.2
 sentry_bind: 9000
 
 sentry_env: {}
 sentry_mail: {}
 sentry_config: {}
 
-sentry_url: 
+sentry_url: "https://url.com"
 sentry_superusers: []
+
+# Controls whether install.sh automatically modifies sentry.conf.py during upgrades.
+# When Sentry introduces new infrastructure (e.g. migrating nodestore from Postgres to SeaweedFS),
+# the install script may need to patch the config. 
+#
+# "1" - apply changes automatically (recommended for fresh installs and upgrades)
+# "0" - skip automatic changes, you will need to update sentry.conf.py manually
+#
+# See: https://develop.sentry.dev/self-hosted/
+sentry_apply_automatic_config_updates: "0"
