@@ -3,13 +3,13 @@
   file:
     path: "{{ item }}"
     state: directory
-    mode: 0700
+    mode: 0755
   loop:
     - "{{ sentry_docker_compose_project_folder }}"
 
 - name: Checkout sentry self hosted docker-compose project
   git:
-    repo: https://github.com/getsentry/onpremise.git
+    repo: https://github.com/getsentry/self-hosted.git
     version: "{{ sentry_version }}"
     dest: "{{ sentry_docker_compose_project_folder }}"
     force: true
@@ -30,6 +30,8 @@
   command:
     chdir: "{{ sentry_docker_compose_project_folder }}"
     cmd: ./install.sh --no-report-self-hosted-issues --skip-user-creation
+  environment:
+    APPLY_AUTOMATIC_CONFIG_UPDATES: "{{ sentry_apply_automatic_config_updates }}"
   async: 600
   poll: 30
 
