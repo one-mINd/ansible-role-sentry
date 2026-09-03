@@ -124,6 +124,11 @@ services:
   smtp:
     <<: *restart_policy
     image: registry.gitlab.com/egos-tech/smtp
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['smtp'].cpu }}"
+          memory: "{{ sentry_limits['smtp'].ram }}"
     volumes:
       - "sentry-smtp:/var/spool/exim4"
       - "sentry-smtp-log:/var/log/exim4"
@@ -136,6 +141,11 @@ services:
   memcached:
     <<: *restart_policy
     image: "memcached:1.6.45-alpine"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['memcached'].cpu }}"
+          memory: "{{ sentry_limits['memcached'].ram }}"
     command: ["-I", "${SENTRY_MAX_EXTERNAL_SOURCEMAP_SIZE:-1M}"]
     healthcheck:
       <<: *healthcheck_defaults
@@ -144,6 +154,11 @@ services:
   redis:
     <<: *restart_policy
     image: "valkey/valkey:8.1.9-alpine"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['redis'].cpu }}"
+          memory: "{{ sentry_limits['redis'].ram }}"
     healthcheck:
       <<: *healthcheck_defaults
       test: valkey-cli ping | grep PONG
@@ -162,6 +177,11 @@ services:
     <<: *restart_policy
     # Using the same postgres version as Sentry dev for consistency purposes
     image: "postgres:14.24-bookworm"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['postgres'].cpu }}"
+          memory: "{{ sentry_limits['postgres'].ram }}"
     healthcheck:
       <<: *healthcheck_defaults
       # Using default user "postgres" from sentry/sentry.conf.example.py or value of POSTGRES_USER if provided
@@ -176,6 +196,11 @@ services:
   pgbouncer:
     <<: *restart_policy
     image: "edoburu/pgbouncer:v1.25.2-p0"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['pgbouncer'].cpu }}"
+          memory: "{{ sentry_limits['pgbouncer'].ram }}"
     healthcheck:
       <<: *healthcheck_defaults
       # Using default user "postgres" from sentry/sentry.conf.example.py or value of POSTGRES_USER if provided
@@ -195,6 +220,11 @@ services:
   kafka:
     <<: *restart_policy
     image: "confluentinc/cp-kafka:7.6.13"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['kafka'].cpu }}"
+          memory: "{{ sentry_limits['kafka'].ram }}"
     environment:
       # https://docs.confluent.io/platform/current/installation/docker/config-reference.html#cp-kakfa-example
       KAFKA_PROCESS_ROLES: "broker,controller"
@@ -236,6 +266,11 @@ services:
   clickhouse:
     <<: [*restart_policy, *pull_policy]
     image: clickhouse-self-hosted-local
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['clickhouse'].cpu }}"
+          memory: "{{ sentry_limits['clickhouse'].ram }}"
     build:
       context: ./clickhouse
       args:
@@ -274,6 +309,11 @@ services:
   seaweedfs:
     <<: *restart_policy
     image: "chrislusf/seaweedfs:4.40_large_disk@sha256:d07aa1dae03c687e0737b86130ded1b18474211a09e85d737fbe5508b8805139"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['seaweedfs'].cpu }}"
+          memory: "{{ sentry_limits['seaweedfs'].ram }}"
     entrypoint: "weed"
     command: >-
         mini
@@ -306,6 +346,11 @@ services:
       start_period: 60s
   snuba-api:
     <<: *snuba_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['snuba-api'].cpu }}"
+          memory: "{{ sentry_limits['snuba-api'].ram }}"
     volumes:
       - "./snuba/api_healthcheck.py:/usr/src/snuba/api_healthcheck.py:ro"
     healthcheck:
@@ -314,6 +359,11 @@ services:
   # Kafka consumer responsible for feeding events into Clickhouse
   snuba-errors-consumer:
     <<: *snuba_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['snuba-errors-consumer'].cpu }}"
+          memory: "{{ sentry_limits['snuba-errors-consumer'].ram }}"
     command: rust-consumer --storage errors --consumer-group snuba-consumers --auto-offset-reset=latest --max-batch-time-ms 750 --no-strict-offset-reset --health-check-file /tmp/health.txt --max-poll-interval-ms ${SENTRY_KAFKA_MAX_POLL_INTERVAL_MS:-300000}
     healthcheck:
       <<: *file_healthcheck_defaults
@@ -322,6 +372,11 @@ services:
   # since we did not do a proper migration
   snuba-outcomes-consumer:
     <<: *snuba_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['snuba-outcomes-consumer'].cpu }}"
+          memory: "{{ sentry_limits['snuba-outcomes-consumer'].ram }}"
     command: rust-consumer --storage outcomes_raw --consumer-group snuba-consumers --auto-offset-reset=earliest --max-batch-time-ms 750 --no-strict-offset-reset --health-check-file /tmp/health.txt --max-poll-interval-ms ${SENTRY_KAFKA_MAX_POLL_INTERVAL_MS:-300000}
     healthcheck:
       <<: *file_healthcheck_defaults
@@ -332,21 +387,41 @@ services:
       - feature-complete
   snuba-outcomes-billing-consumer:
     <<: *snuba_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['snuba-outcomes-billing-consumer'].cpu }}"
+          memory: "{{ sentry_limits['snuba-outcomes-billing-consumer'].ram }}"
     command: rust-consumer --storage outcomes_raw --consumer-group snuba-consumers --auto-offset-reset=earliest --max-batch-time-ms 750 --no-strict-offset-reset --raw-events-topic outcomes-billing --health-check-file /tmp/health.txt --max-poll-interval-ms ${SENTRY_KAFKA_MAX_POLL_INTERVAL_MS:-300000}
     healthcheck:
       <<: *file_healthcheck_defaults
   snuba-group-attributes-consumer:
     <<: *snuba_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['snuba-group-attributes-consumer'].cpu }}"
+          memory: "{{ sentry_limits['snuba-group-attributes-consumer'].ram }}"
     command: rust-consumer --storage group_attributes --consumer-group snuba-group-attributes-consumers --auto-offset-reset=latest --max-batch-time-ms 750 --no-strict-offset-reset --health-check-file /tmp/health.txt --max-poll-interval-ms ${SENTRY_KAFKA_MAX_POLL_INTERVAL_MS:-300000}
     healthcheck:
       <<: *file_healthcheck_defaults
   snuba-replacer:
     <<: *snuba_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['snuba-replacer'].cpu }}"
+          memory: "{{ sentry_limits['snuba-replacer'].ram }}"
     command: replacer --storage errors --auto-offset-reset=latest --no-strict-offset-reset --health-check-file /tmp/health.txt --max-poll-interval-ms ${SENTRY_KAFKA_MAX_POLL_INTERVAL_MS:-300000}
     healthcheck:
       <<: *file_healthcheck_defaults
   snuba-subscription-consumer-events:
     <<: *snuba_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['snuba-subscription-consumer-events'].cpu }}"
+          memory: "{{ sentry_limits['snuba-subscription-consumer-events'].ram }}"
     command: subscriptions-scheduler-executor --dataset events --entity events --auto-offset-reset=latest --no-strict-offset-reset --consumer-group=snuba-events-subscriptions-consumers --followed-consumer-group=snuba-consumers --schedule-ttl=60 --stale-threshold-seconds=900 --health-check-file /tmp/health.txt
     healthcheck:
       <<: *file_healthcheck_defaults
@@ -440,12 +515,22 @@ services:
       - feature-complete
   snuba-subscription-consumer-eap-items:
     <<: *snuba_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['snuba-subscription-consumer-eap-items'].cpu }}"
+          memory: "{{ sentry_limits['snuba-subscription-consumer-eap-items'].ram }}"
     command: subscriptions-scheduler-executor --dataset events_analytics_platform --entity eap_items --auto-offset-reset=latest --no-strict-offset-reset --consumer-group=snuba-eap-items-subscriptions-consumers --followed-consumer-group=eap_items_group --schedule-ttl=60 --stale-threshold-seconds=900 --health-check-file /tmp/health.txt
     healthcheck:
       <<: *file_healthcheck_defaults
   symbolicator:
     <<: [*restart_policy, *pull_policy]
     image: "$SYMBOLICATOR_IMAGE"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['symbolicator'].cpu }}"
+          memory: "{{ sentry_limits['symbolicator'].ram }}"
     environment:
       SYMBOLICATOR_STATSD_ADDR: ${STATSD_ADDR:-127.0.0.1:8125}
     command: run -c /etc/symbolicator/config.yml
@@ -461,6 +546,11 @@ services:
   symbolicator-cleanup:
     <<: *restart_policy
     image: "$SYMBOLICATOR_IMAGE"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['symbolicator-cleanup'].cpu }}"
+          memory: "{{ sentry_limits['symbolicator-cleanup'].ram }}"
     environment:
       SYMBOLICATOR_STATSD_ADDR: ${STATSD_ADDR:-127.0.0.1:8125}
     command: "cleanup -c /etc/symbolicator/config.yml --repeat 1h"
@@ -472,6 +562,11 @@ services:
         target: /etc/symbolicator
   web:
     <<: *sentry_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['web'].cpu }}"
+          memory: "{{ sentry_limits['web'].ram }}"
     ulimits:
       nofile:
         soft: 4096
@@ -487,16 +582,31 @@ services:
         - 'exec 3<>/dev/tcp/127.0.0.1/9000 && echo -e "GET /_health/ HTTP/1.1\r\nhost: 127.0.0.1\r\n\r\n" >&3 && grep ok -s -m 1 <&3'
   events-consumer:
     <<: *sentry_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['events-consumer'].cpu }}"
+          memory: "{{ sentry_limits['events-consumer'].ram }}"
     command: run consumer ingest-events --consumer-group ingest-consumer --auto-offset-reset=earliest --no-strict-offset-reset --healthcheck-file-path /tmp/health.txt --max-poll-interval-ms ${SENTRY_KAFKA_MAX_POLL_INTERVAL_MS:-300000}
     healthcheck:
       <<: *file_healthcheck_defaults
   attachments-consumer:
     <<: *sentry_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['attachments-consumer'].cpu }}"
+          memory: "{{ sentry_limits['attachments-consumer'].ram }}"
     command: run consumer ingest-attachments --consumer-group ingest-consumer --auto-offset-reset=earliest --no-strict-offset-reset --healthcheck-file-path /tmp/health.txt --max-poll-interval-ms ${SENTRY_KAFKA_MAX_POLL_INTERVAL_MS:-300000}
     healthcheck:
       <<: *file_healthcheck_defaults
   post-process-forwarder-errors:
     <<: *sentry_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['post-process-forwarder-errors'].cpu }}"
+          memory: "{{ sentry_limits['post-process-forwarder-errors'].ram }}"
     command: run consumer post-process-forwarder-errors --auto-offset-reset=earliest --no-strict-offset-reset --consumer-group post-process-forwarder --synchronize-commit-log-topic=snuba-commit-log --synchronize-commit-group=snuba-consumers --healthcheck-file-path /tmp/health.txt --max-poll-interval-ms ${SENTRY_KAFKA_MAX_POLL_INTERVAL_MS:-300000}
     healthcheck:
       <<: *file_healthcheck_defaults
@@ -590,6 +700,11 @@ services:
   sentry-cleanup:
     <<: *sentry_defaults
     image: sentry-cleanup-self-hosted-local
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['sentry-cleanup'].cpu }}"
+          memory: "{{ sentry_limits['sentry-cleanup'].ram }}"
     build:
       context: ./cron
       args:
@@ -601,6 +716,11 @@ services:
     ports:
       - "$SENTRY_BIND:80/tcp"
     image: "nginx:1.31.4-alpine"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['nginx'].cpu }}"
+          memory: "{{ sentry_limits['nginx'].ram }}"
     volumes:
       - type: bind
         read_only: true
@@ -624,6 +744,11 @@ services:
   relay:
     <<: [*restart_policy, *pull_policy]
     image: "$RELAY_IMAGE"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['relay'].cpu }}"
+          memory: "{{ sentry_limits['relay'].ram }}"
     environment:
       RELAY_STATSD_ADDR: ${STATSD_ADDR:-127.0.0.1:8125}
     volumes:
@@ -645,6 +770,11 @@ services:
   taskbroker:
     <<: [*restart_policy, *pull_policy]
     image: "$TASKBROKER_IMAGE"
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['taskbroker'].cpu }}"
+          memory: "{{ sentry_limits['taskbroker'].ram }}"
     environment:
       # The cluster address (and, in the external-kafka variant, its auth) is
       # supplied via env vars. Topics live in the mounted config file
@@ -665,9 +795,19 @@ services:
         <<: *depends_on-healthy
   taskscheduler:
     <<: *sentry_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['taskscheduler'].cpu }}"
+          memory: "{{ sentry_limits['taskscheduler'].ram }}"
     command: run taskworker-scheduler
   taskworker:
     <<: *sentry_defaults
+    deploy:
+      resources:
+        limits:
+          cpus: "{{ sentry_limits['taskworker'].cpu }}"
+          memory: "{{ sentry_limits['taskworker'].ram }}"
     command: run taskworker --concurrency=$SENTRY_TASKWORKER_CONCURRENCY --rpc-host=taskbroker:50051 --health-check-file-path=/tmp/health.txt --max-child-task-count=10000
     healthcheck:
       <<: *file_healthcheck_defaults

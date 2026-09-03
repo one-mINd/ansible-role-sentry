@@ -22,3 +22,89 @@ sentry_superusers: []
 #
 # See: https://develop.sentry.dev/self-hosted/
 sentry_apply_automatic_config_updates: "0"
+
+sentry_limits:
+  smtp:
+    cpu: 0.05
+    ram: 100M
+  memcached:
+    cpu: 0.10
+    ram: 200M
+  redis:
+    cpu: 0.30
+    ram: 500M
+  postgres:
+    cpu: 1.00
+    ram: 2000M
+  pgbouncer:
+    cpu: 0.10
+    ram: 200M
+  kafka:
+    cpu: 1.00
+    ram: 2000M
+  clickhouse:
+    cpu: 2.00
+    ram: 4000M
+  seaweedfs:
+    cpu: 0.20
+    ram: 500M
+  snuba-api:
+    cpu: 0.50
+    ram: 1000M
+  snuba-errors-consumer:
+    cpu: 0.20
+    ram: 300M
+  snuba-outcomes-consumer:
+    cpu: 0.20
+    ram: 300M
+  snuba-outcomes-billing-consumer:
+    cpu: 0.20
+    ram: 300M
+  snuba-group-attributes-consumer:
+    cpu: 0.20
+    ram: 300M
+  snuba-replacer:
+    cpu: 0.20
+    ram: 300M
+  snuba-subscription-consumer-events:
+    cpu: 0.20
+    ram: 300M
+  snuba-subscription-consumer-eap-items:
+    cpu: 0.20
+    ram: 300M
+  symbolicator:
+    cpu: 0.50
+    ram: 1000M
+  symbolicator-cleanup:
+    cpu: 0.10
+    ram: 200M
+  web:
+    cpu: 1.50
+    ram: 3000M
+  events-consumer:
+    cpu: 0.30
+    ram: 400M
+  attachments-consumer:
+    cpu: 0.30
+    ram: 400M
+  post-process-forwarder-errors:
+    cpu: 0.20
+    ram: 300M
+  sentry-cleanup:
+    cpu: 0.10
+    ram: 200M
+  nginx:
+    cpu: 0.10
+    ram: 200M
+  relay:
+    cpu: 0.30
+    ram: 500M
+  taskbroker:
+    cpu: 0.10
+    ram: 200M
+  taskscheduler:
+    cpu: 0.10
+    ram: 200M
+  taskworker:
+    cpu: 0.50
+    ram: 1000M
