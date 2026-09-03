@@ -15,7 +15,7 @@ Role Variables
 
 ```yaml
 sentry_docker_compose_project_folder: /opt/docker/sentry
-sentry_version: 21.1.0
+sentry_version: 26.8.0
 sentry_bind: 9000
 sentry_env: {}
 
@@ -26,14 +26,14 @@ sentry_mail:
   username: redacted
   password: redacted
 
-sentry_config:
-  slack.client-id: "redacted"
-  slack.client-secret: "redacted"
-  slack.signing-secret: "redacted"
-  slack.legacy-app: false
+sentry_config: {}
+sentry_config_py: {}
 
 sentry_url: https://sentry.example.com
 sentry_superusers:
   - email: admin@example.com
     password: redacted
+
+sentry_apply_automatic_config_updates: "0"
+
 ```
