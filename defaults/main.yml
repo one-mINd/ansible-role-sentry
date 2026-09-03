@@ -53,25 +53,25 @@ sentry_limits:
     ram: 1000M
   snuba-errors-consumer:
     cpu: 0.20
-    ram: 300M
+    ram: 500M
   snuba-outcomes-consumer:
     cpu: 0.20
-    ram: 300M
+    ram: 500M
   snuba-outcomes-billing-consumer:
     cpu: 0.20
-    ram: 300M
+    ram: 500M
   snuba-group-attributes-consumer:
     cpu: 0.20
-    ram: 300M
+    ram: 500M
   snuba-replacer:
     cpu: 0.20
-    ram: 300M
+    ram: 500M
   snuba-subscription-consumer-events:
     cpu: 0.20
-    ram: 300M
+    ram: 500M
   snuba-subscription-consumer-eap-items:
     cpu: 0.20
-    ram: 300M
+    ram: 500M
   symbolicator:
     cpu: 0.50
     ram: 1000M
