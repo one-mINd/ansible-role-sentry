@@ -23,6 +23,8 @@ sentry_superusers: []
 # See: https://develop.sentry.dev/self-hosted/
 sentry_apply_automatic_config_updates: "0"
 
+sentry_clickhouse_max_memory_usage_ratio: 0.3
+
 sentry_limits:
   smtp:
     cpu: 0.05
