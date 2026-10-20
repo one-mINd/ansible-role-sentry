@@ -32,7 +32,7 @@
     cmd: ./install.sh --no-report-self-hosted-issues --skip-user-creation
   environment:
     APPLY_AUTOMATIC_CONFIG_UPDATES: "{{ sentry_apply_automatic_config_updates }}"
-  async: 600
+  async: "{{ sentry_install_async }}"
   poll: 30
 
 - name: Ensure compose file
@@ -71,12 +71,27 @@
     regexp: "^#?\\s*{{ item.key | regex_escape() }}:"
     line: "{{ item.key }}: {{ item.value }}"
 
+- name: Configure sentry python lines
+  loop: "{{ sentry_config_py_lines }}"
+  ansible.builtin.lineinfile:
+    path: "{{ sentry_docker_compose_project_folder }}/sentry/sentry.conf.py"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: EOF
+
+- name: Remove sentry python lines
+  loop: "{{ sentry_config_py_absent }}"
+  ansible.builtin.lineinfile:
+    path: "{{ sentry_docker_compose_project_folder }}/sentry/sentry.conf.py"
+    regexp: "{{ item }}"
+    state: absent
+
 - name: Start sentry self hosted docker-compose project
   community.docker.docker_compose_v2:
     project_src: "{{ sentry_docker_compose_project_folder }}"
     remove_orphans: true
     state: present
-  async: 600
+  async: "{{ sentry_install_async }}"
   poll: 30
 
 - name: Add sentry super users
