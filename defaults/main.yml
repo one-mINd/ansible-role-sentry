@@ -2,13 +2,16 @@
 # defaults file for sentry_selfhosted
 
 sentry_docker_compose_project_folder: /opt/docker/sentry
-sentry_version: 26.8.0
+sentry_version: 26.10.0
 sentry_bind: 9000
+sentry_install_async: 3600
 
 sentry_env: {}
 sentry_mail: {}
 sentry_config: {}
 sentry_config_py: {}
+sentry_config_py_lines: []
+sentry_config_py_absent: []
 
 sentry_url: "https://url.com"
 sentry_superusers: []
