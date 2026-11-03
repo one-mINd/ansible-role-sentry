@@ -42,7 +42,7 @@ sentry_limits:
     cpu: 1.00
     ram: 2000M
   pgbouncer:
-    cpu: 0.10
+    cpu: 0.50
     ram: 200M
   kafka:
     cpu: 1.00
@@ -88,18 +88,18 @@ sentry_limits:
     ram: 3000M
   events-consumer:
     cpu: 0.30
-    ram: 400M
+    ram: 800M
   attachments-consumer:
     cpu: 0.30
-    ram: 400M
+    ram: 1000M
   post-process-forwarder-errors:
     cpu: 0.20
-    ram: 300M
+    ram: 800M
   sentry-cleanup:
     cpu: 0.10
     ram: 200M
   nginx:
-    cpu: 0.10
+    cpu: 0.50
     ram: 200M
   relay:
     cpu: 0.30
@@ -109,7 +109,7 @@ sentry_limits:
     ram: 200M
   taskscheduler:
     cpu: 0.10
-    ram: 200M
+    ram: 400M
   taskworker:
-    cpu: 0.50
-    ram: 1000M
+    cpu: 2.00
+    ram: 3000M
