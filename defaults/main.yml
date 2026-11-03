@@ -111,5 +111,5 @@ sentry_limits:
     cpu: 0.10
     ram: 200M
   taskworker:
-    cpu: 0.50
-    ram: 1000M
+    cpu: 2.00
+    ram: 3000M
