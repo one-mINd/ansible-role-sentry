@@ -1,5 +1,5 @@
 x-restart-policy: &restart_policy
-  restart: unless-stopped
+  restart: {{ sentry_restart_policy }}
 x-pull-policy: &pull_policy
   pull_policy: never
 x-depends_on-healthy: &depends_on-healthy

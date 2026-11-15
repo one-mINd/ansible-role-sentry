@@ -27,6 +27,7 @@ Role Variables
 | `sentry_version` | `26.10.1` | self-hosted tag. The template matches this tag only, see [Upgrading](#upgrading) |
 | `sentry_docker_compose_project_folder` | `/opt/docker/sentry` | checkout directory |
 | `sentry_bind` | `9000` | `SENTRY_BIND` in `.env` |
+| `sentry_restart_policy` | `unless-stopped` | `restart` of all long-running services. `always` also brings them back when dockerd restarts while containers are still running and `live-restore` is off |
 | `sentry_install_async` | `3600` | timeout in seconds for `install.sh` and `compose up`. PostgreSQL major upgrades inside `install.sh` need more than 600 |
 | `sentry_env` | `{}` | extra `.env` keys |
 | `sentry_mail` | `{}` | `mail.*` keys in `sentry/config.yml` |

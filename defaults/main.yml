@@ -4,6 +4,9 @@
 sentry_docker_compose_project_folder: /opt/docker/sentry
 sentry_version: 26.10.1
 sentry_bind: 9000
+# Restart policy of all long-running services (x-restart-policy in docker-compose.yml).
+# "always" also brings containers back after dockerd was restarted while containerd was down.
+sentry_restart_policy: unless-stopped
 sentry_install_async: 3600
 
 sentry_env: {}
